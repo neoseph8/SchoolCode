@@ -1,3 +1,5 @@
+#HW1
+#A
 #1. Call the cost of your dream home total_cost
 #2. Call the portion of the cost needed for a down payment portion_down_payment
 #For simplicity, assume that portion_down_payment = 0.25  (25%)
@@ -43,3 +45,117 @@ while current_savings < down_payment:
 
 
 print ("Number of months: ",N_months)
+
+
+#B
+#1. Call the cost of your dream home total_cost
+#2. Call the portion of the cost needed for a down payment portion_down_payment
+#For simplicity, assume that portion_down_payment = 0.25  (25%)
+#3. Call the amount that you have saved thus far current_savings
+#You start with a current savings of $0
+#4. Assume that you invest your current savings wisely,  with an annual return of r 
+#(in other words, at the end of each month, you receive an additional current_savings*r/12  funds to put into your savings
+#– the 12 is because r is an annual rate). Assume that your investments earn a return of r = 0.04 (4%)
+#5. Assume your annual salary is annual_salary
+#6. Assume you are going to dedicate a certain amount of your salary each month to saving for the down payment
+#Call that portion_saved
+#This variable should be in decimal form (i.e. 0.1 for 10%)
+#7. At the end of each month, your savings will be increased by the return on your investment, plus a percentage of your 
+#monthly salary (annual salary / 12)
+#Write a program to calculate how many months it will take you to save up enough money for a down payment
+#You will want your main variables to be floats, so you should cast user inputs to floats
+#1. Have the user input a semi-annual salary raise semi_annual_raise (as a decimal percentage)
+#2. After the 6th month, increase your salary by that percentage. Do the same after the 12th month, the 18th month, and so on. 
+
+#Your program should ask the user to enter the following variables:
+#1. The starting annual salary (annual_salary)
+#2. The portion of salary to be saved (portion_saved)
+#3. The cost of your dream home (total_cost)
+#4. Enter the semi annual raise, as a decimal:
+
+ 
+
+annual_salary = float(input("Enter your annual salary: "))
+
+portion_saved = float(input("Enter the percent of your salary to save, as a decimal: "))
+
+total_cost = float(input("Enter the cost of your dream home: "))
+
+semi_annual_raise = float(input("Enter the semi-annual raise, as a decimal: "))
+
+portion_down_payment = 0.25   						#Fraction of Total Cost that needs to be saved for
+down_payment = portion_down_payment * total_cost	#Down Payment to save for, in $
+monthly_return = 0.04 / 12.0  						#Monthly return on investment
+monthly_salary = annual_salary / 12.0					#Monthly salary, in $
+current_savings = 0.0								#current amount in savings, in $
+M_salary_saved = portion_saved * monthly_salary     #Monthly portion of salary saved, in $
+N_months = 0                                        #Number of Months to achieve desired down payment
+
+#print("I: ", M_salary_saved, "r: ", monthly_return)
+
+while current_savings < down_payment:
+    current_savings = current_savings * (1+monthly_return) + M_salary_saved
+    N_months = N_months + 1
+    if N_months % 6 == 0:
+        M_salary_saved = M_salary_saved * (1.0 + semi_annual_raise)
+    #print(N_months, "   ", current_savings)
+
+
+print ("Number of months: ",N_months)
+
+#C
+#1. Your semi-annual raise is .07 (7%)
+#2. Your investments have an annual return of 0.04 (4%)
+#3. The down payment is 0.25 (25%) of the cost of the house 
+#4. The cost of the house that you are saving for is $1M.
+
+annual_salary = float(input("Enter your annual salary: "))
+
+
+N_months = 36                                       #Number of Months to achieve desired down payment
+total_cost = 1000000                                #Total House Price, in $
+
+portion_down_payment = 0.25   						#Fraction of Total Cost that needs to be saved for
+down_payment = portion_down_payment * total_cost	#Down Payment to save for, in $
+portion_saved = 0.5 #down_payment / 3.0 / annual_salary  #First guess is around the 0% interest/raise point
+
+monthly_salary = annual_salary / 12.0				#Monthly salary, in $
+monthly_return = 0.04 / 12.0                        #Monthly return on investment
+semi_annual_raise = 0.07
+    
+
+
+
+
+def Saver (portion_saved):
+    savings = 0.0
+    M_salary_saved = portion_saved * monthly_salary #Monthly portion of salary saved, in $
+    for n in range (N_months):
+        savings = savings * (1+monthly_return) + M_salary_saved
+        n = n + 1
+        if n % 6 == 0:
+            M_salary_saved = M_salary_saved * (1.0 + semi_annual_raise)
+    return savings
+
+
+
+if annual_salary * N_months / 12 < down_payment:
+    print("It is not possible to pay the down payment in three years")
+else:
+
+    current_savings = 0.0
+    step = 1
+    while (abs(current_savings - down_payment) > 100.0) and (step < 100):
+        #print("Current Step: ", step, ". Current Difference: ", abs(current_savings - down_payment)>100, ". Portion Saved: ", portion_saved)
+        step = step + 1
+        current_savings = Saver(portion_saved)
+        if  current_savings > down_payment:
+            portion_saved -= ((2 ** step) ** -1)
+        elif current_savings < down_payment:
+            portion_saved += ((2 ** step) ** -1)
+
+    print ("Best savings rate: ", portion_saved)
+    print ("Steps in bisection search: ", step)
+    
+
+

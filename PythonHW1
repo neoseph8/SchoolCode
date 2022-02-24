@@ -104,6 +104,9 @@ while current_savings < down_payment:
 print ("Number of months: ",N_months)
 
 #C
+
+import math
+
 #1. Your semi-annual raise is .07 (7%)
 #2. Your investments have an annual return of 0.04 (4%)
 #3. The down payment is 0.25 (25%) of the cost of the house 
@@ -114,13 +117,15 @@ annual_salary = float(input("Enter your annual salary: "))
 
 N_months = 36                                       #Number of Months to achieve desired down payment
 total_cost = 1000000                                #Total House Price, in $
-
-portion_down_payment = 0.25   						#Fraction of Total Cost that needs to be saved for
-down_payment = portion_down_payment * total_cost	#Down Payment to save for, in $
-portion_saved = 0.5 #down_payment / 3.0 / annual_salary  #First guess is around the 0% interest/raise point
-
 monthly_salary = annual_salary / 12.0				#Monthly salary, in $
 monthly_return = 0.04 / 12.0                        #Monthly return on investment
+portion_down_payment = 0.25   						#Fraction of Total Cost that needs to be saved for
+down_payment = portion_down_payment * total_cost	#Down Payment to save for, in $
+
+portion_saved = down_payment * monthly_return / monthly_salary * (math.exp(monthly_return * N_months) -1 ) ** -1
+#down_payment / 3.0 / annual_salary  #First guess is around the 0% interest/raise point
+
+
 semi_annual_raise = 0.07
     
 
@@ -146,16 +151,14 @@ else:
     current_savings = 0.0
     step = 1
     while (abs(current_savings - down_payment) > 100.0) and (step < 100):
-        #print("Current Step: ", step, ". Current Difference: ", abs(current_savings - down_payment)>100, ". Portion Saved: ", portion_saved)
+        print("Current Step: ", step, ". Current Difference: ", abs(current_savings - down_payment)>100, ". Portion Saved: ", portion_saved)
         step = step + 1
         current_savings = Saver(portion_saved)
         if  current_savings > down_payment:
-            portion_saved -= ((2 ** step) ** -1)
+            portion_saved -= portion_saved*((2 ** step) ** -1)
         elif current_savings < down_payment:
-            portion_saved += ((2 ** step) ** -1)
+            portion_saved += portion_saved*((2 ** step) ** -1)
 
     print ("Best savings rate: ", portion_saved)
     print ("Steps in bisection search: ", step)
-    
-
-
+   
